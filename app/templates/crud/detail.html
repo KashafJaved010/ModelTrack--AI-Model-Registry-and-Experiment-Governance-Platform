@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ meta.label }} #{{ item.id }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3>{{ meta.label }} #{{ item.id }}</h3>
+  <div>
+    {% if not item.is_deleted %}
+      <a class="btn btn-outline-primary btn-sm" href="{{ url_for('crud.edit_item', model=meta.slug, id=item.id) }}">Edit</a>
+    {% endif %}
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('crud.list_items', model=meta.slug) }}">Back</a>
+  </div>
+</div>
+
+{% if item.is_deleted %}
+<div class="alert alert-warning">
+  This record was <strong>soft-deleted</strong> on {{ item.deleted_at }} by user #{{ item.deleted_by }}.
+  It still exists in the database but is excluded from normal queries.
+</div>
+{% endif %}
+
+<div class="card"><div class="card-body">
+  <table class="table table-sm mb-0">
+    {% for col in item.__table__.columns %}
+      <tr>
+        <th class="text-muted" style="width:220px">{{ col.name }}</th>
+        <td>{{ item|field_display(col.name) }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+</div></div>
+{% endblock %}

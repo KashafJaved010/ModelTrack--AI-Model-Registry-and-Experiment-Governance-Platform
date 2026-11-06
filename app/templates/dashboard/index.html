@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — ModelTrack{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-end mb-4">
+  <div>
+    <h3 class="fw-bold mb-1 text-dark">Overview Dashboard</h3>
+    <p class="text-muted mb-0">Welcome back, {{ user.full_name or user.username }}! Here is what's happening today.</p>
+  </div>
+</div>
+
+<div class="row g-4" id="stat-cards">
+  <!-- Models -->
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-icon bg-primary bg-opacity-10 text-primary"><i class="bi bi-box-seam"></i></div>
+        <div class="text-muted small fw-bold text-uppercase mb-1">Total Models</div>
+        <h3 id="stat-models">—</h3>
+      </div>
+    </div>
+  </div>
+  <!-- Versions -->
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-icon bg-success bg-opacity-10 text-success"><i class="bi bi-layers"></i></div>
+        <div class="text-muted small fw-bold text-uppercase mb-1">Model Versions</div>
+        <h3 id="stat-versions">—</h3>
+      </div>
+    </div>
+  </div>
+  <!-- Experiments -->
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-icon bg-warning bg-opacity-10 text-warning"><i class="bi bi-lightning-charge"></i></div>
+        <div class="text-muted small fw-bold text-uppercase mb-1">Experiments</div>
+        <h3 id="stat-experiments">—</h3>
+      </div>
+    </div>
+  </div>
+  <!-- Deployments -->
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-icon bg-info bg-opacity-10 text-info"><i class="bi bi-rocket-takeoff"></i></div>
+        <div class="text-muted small fw-bold text-uppercase mb-1">Deployments</div>
+        <h3 id="stat-deployments">—</h3>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Lower row -->
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-icon bg-secondary bg-opacity-10 text-secondary"><i class="bi bi-database"></i></div>
+        <div class="text-muted small fw-bold text-uppercase mb-1">Datasets</div>
+        <h3 id="stat-datasets">—</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-icon bg-danger bg-opacity-10 text-danger"><i class="bi bi-exclamation-triangle"></i></div>
+        <div class="text-muted small fw-bold text-uppercase mb-1">Open Alerts</div>
+        <h3 id="stat-alerts" class="text-danger">—</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-icon bg-danger bg-opacity-10 text-danger"><i class="bi bi-bug"></i></div>
+        <div class="text-muted small fw-bold text-uppercase mb-1">Open Incidents</div>
+        <h3 id="stat-incidents" class="text-danger">—</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card h-100">
+      <div class="card-body">
+        <div class="stat-icon bg-dark bg-opacity-10 text-dark"><i class="bi bi-clock-history"></i></div>
+        <div class="text-muted small fw-bold text-uppercase mb-1">Recent (7d)</div>
+        <h3 id="stat-recent">—</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-end mt-2">
+  <small class="text-muted"><i class="bi bi-arrow-repeat"></i> Last sync: <span id="stat-time">—</span></small>
+</div>
+
+<div class="row mt-4 g-4">
+  <!-- Recent Activity Table -->
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-activity me-2 text-primary"></i>Recent Activity</span>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr><th>#</th><th>User</th><th>Action</th><th>Entity</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+            {% for log in logs %}
+              <tr>
+                <td class="text-muted">#{{ log.id }}</td>
+                <td><span class="badge bg-light text-dark border"><i class="bi bi-person"></i> {{ log.user_id }}</span></td>
+                <td>{{ log.action | title }}</td>
+                <td><span class="text-primary">{{ log.entity_type }}</span> #{{ log.entity_id }}</td>
+                <td class="text-muted small">{{ log.created_at.strftime('%Y-%m-%d %H:%M') if log.created_at else '' }}</td>
+              </tr>
+            {% else %}
+              <tr><td colspan="5" class="text-center text-muted py-5">
+                <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+                No activity recorded yet. Try creating a record!
+              </td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Recent Alerts -->
+  <div class="col-lg-5">
+    <div class="card h-100">
+      <div class="card-header"><i class="bi bi-bell me-2 text-warning"></i>Recent Alerts</div>
+      <ul class="list-group list-group-flush">
+        {% for a in alerts %}
+          <li class="list-group-item d-flex justify-content-between align-items-center p-4">
+            <div>
+              <div class="fw-bold text-dark">{{ a.metric_name }}</div>
+              <div class="text-muted small">{{ a.message }}</div>
+            </div>
+            <span class="badge bg-{{ 'danger' if a.severity=='critical' else 'warning' if a.severity=='warning' else 'secondary' }} rounded-pill px-3 py-2">
+              {{ a.severity | upper }}
+            </span>
+          </li>
+        {% else %}
+          <li class="list-group-item text-center text-muted py-5">
+            <i class="bi bi-shield-check fs-2 d-block mb-2 text-success"></i>
+            All systems operational. No alerts.
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

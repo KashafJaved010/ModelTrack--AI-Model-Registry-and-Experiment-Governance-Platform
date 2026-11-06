@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Login — ModelTrack{% endblock %}
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+  <div class="col-md-5">
+    <div class="card shadow-lg border-0 rounded-4">
+      <div class="card-body p-5">
+        <div class="text-center mb-4">
+          <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex justify-content-center align-items-center mb-3" style="width: 70px; height: 70px;">
+            <i class="bi bi-cpu fs-1"></i>
+          </div>
+          <h3 class="fw-bold">Welcome Back</h3>
+          <p class="text-muted">Sign in to ModelTrack</p>
+        </div>
+        
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label fw-bold text-muted small">USERNAME</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+              <input class="form-control border-start-0 bg-light" name="username" placeholder="Enter your username" required>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-bold text-muted small">PASSWORD</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+              <input type="password" class="form-control border-start-0 bg-light" name="password" placeholder="Enter your password" required>
+            </div>
+          </div>
+          <button class="btn btn-primary w-100 py-2 fw-bold rounded-3">Sign In</button>
+        </form>
+        
+        <div class="text-center mt-4">
+          <a href="{{ url_for('auth.register') }}" class="text-decoration-none">Don't have an account? <strong>Create one</strong></a>
+        </div>
+        <div class="alert alert-light border mt-4 mb-0 text-center small text-muted">
+          <i class="bi bi-info-circle"></i> Default Admin: <code class="text-dark">admin / Admin@123</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

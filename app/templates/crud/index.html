@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}All Modules — ModelTrack{% endblock %}
+{% block content %}
+<h3>All Modules</h3>
+<p class="text-muted">40 tables across 6 modules. Click any model to manage records.</p>
+<div class="row g-3">
+  {% for module, items in modules.items() %}
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-header">{{ module }} <span class="badge bg-secondary">{{ items|length }}</span></div>
+      <ul class="list-group list-group-flush">
+        {% for m in items %}
+          <li class="list-group-item d-flex justify-content-between">
+            <a href="{{ url_for('crud.list_items', model=m.slug) }}">{{ m.label }}</a>
+            <span class="text-muted small">{{ m.slug }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

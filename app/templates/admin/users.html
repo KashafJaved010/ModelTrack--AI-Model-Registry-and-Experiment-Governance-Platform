@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Users — ModelTrack{% endblock %}
+{% block content %}
+<h3>User Management</h3>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-4"><input name="q" value="{{ q }}" class="form-control" placeholder="Search username"></div>
+  <div class="col-md-2"><button class="btn btn-outline-primary">Search</button></div>
+</form>
+<div class="card"><div class="card-body p-0">
+<table class="table mb-0">
+  <thead class="table-light"><tr>
+    <th>ID</th><th>Username</th><th>Email</th><th>Roles</th><th>Active</th><th>Actions</th>
+  </tr></thead>
+  <tbody>
+  {% for u in pagination.items %}
+    <tr>
+      <td>{{ u.id }}</td>
+      <td>{{ u.username }}</td>
+      <td>{{ u.email }}</td>
+      <td>
+        {% for r in u.roles %}<span class="badge bg-primary me-1">{{ r.name }}</span>{% endfor %}
+      </td>
+      <td>
+        <span class="badge bg-{{ 'success' if u.is_active else 'secondary' }}">{{ 'yes' if u.is_active else 'no' }}</span>
+      </td>
+      <td>
+        <form class="d-inline" method="post" action="{{ url_for('admin.toggle_user', id=u.id) }}">
+          <button class="btn btn-sm btn-outline-warning">Toggle</button>
+        </form>
+        <form class="d-inline" method="post" action="{{ url_for('admin.set_role', id=u.id) }}">
+          <select name="role" class="form-select form-select-sm d-inline w-auto">
+            {% for r in roles %}<option>{{ r.name }}</option>{% endfor %}
+          </select>
+          <button class="btn btn-sm btn-outline-primary">Add role</button>
+        </form>
+        <form class="d-inline" method="post" action="{{ url_for('admin.soft_delete_user', id=u.id) }}"
+              onsubmit="return confirm('Soft delete user?');">
+          <button class="btn btn-sm btn-outline-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div></div>
+{% endblock %}
